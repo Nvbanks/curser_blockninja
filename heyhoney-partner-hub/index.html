@@ -1,0 +1,806 @@
+<title>Hey Honey Partner Hub</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: honeycomb header band with market switch, KPI strip, then a stage board (or list); creator detail opens in a side drawer. */
+:root {
+  --bg: #FFFCF4;
+  --surface: #FFFFFF;
+  --surface-2: #FFF5DC;
+  --ink: #1E1608;
+  --ink-2: #5C4A2A;
+  --ink-3: #8F7B57;
+  --line: #EEDFBF;
+  --honey: #F5A300;
+  --honey-deep: #B86E00;
+  --honey-ink: #1E1608;
+  --comb: #F5A300;
+  --band: #1E1608;
+  --band-ink: #FFF3D6;
+  --band-ink-2: #D7BF8C;
+  --shadow: 0 1px 2px rgba(60,40,0,.06), 0 8px 24px rgba(60,40,0,.07);
+  --overlay: rgba(30,22,8,.42);
+  --ok: #1F8A4C; --ok-bg: #E2F4E9;
+  --bad: #C2362B; --bad-bg: #FBE6E3;
+  --s-wish: #7A6A4F;      --s-wish-bg: #F1EADB;
+  --s-contacted: #2F6FB3; --s-contacted-bg: #E3EEFA;
+  --s-negotiation: #7B4BC0; --s-negotiation-bg: #EFE7FA;
+  --s-deal: #B86E00;      --s-deal-bg: #FFEDC2;
+  --s-onboarded: #0F8580; --s-onboarded-bg: #DDF3F1;
+  --s-active: #1F8A4C;    --s-active-bg: #E2F4E9;
+  --s-paused: #6B6B6B;    --s-paused-bg: #ECECEC;
+  --s-declined: #C2362B;  --s-declined-bg: #FBE6E3;
+  --f-display: "Unbounded", "Arial Black", system-ui, sans-serif;
+  --f-body: "Manrope", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14100A; --surface: #1D170E; --surface-2: #261E11; --ink: #FBF0D6; --ink-2: #D5C29B; --ink-3: #9C8A66;
+    --line: #3A2E1A; --honey: #FFB627; --honey-deep: #FFC85A; --honey-ink: #1E1608; --comb: #FFB627;
+    --band: #0C0905; --band-ink: #FFF3D6; --band-ink-2: #BFA676;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35); --overlay: rgba(0,0,0,.6);
+    --ok: #5BD08C; --ok-bg: #173323; --bad: #FF7B6E; --bad-bg: #3A1A16;
+    --s-wish: #CDBB98; --s-wish-bg: #2D2517; --s-contacted: #7DB3F0; --s-contacted-bg: #16263A;
+    --s-negotiation: #B898EE; --s-negotiation-bg: #261C38; --s-deal: #FFC85A; --s-deal-bg: #3A2A0C;
+    --s-onboarded: #5FD3CB; --s-onboarded-bg: #0F2E2C; --s-active: #5BD08C; --s-active-bg: #173323;
+    --s-paused: #A8A8A8; --s-paused-bg: #2A2A2A; --s-declined: #FF7B6E; --s-declined-bg: #3A1A16;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14100A; --surface: #1D170E; --surface-2: #261E11; --ink: #FBF0D6; --ink-2: #D5C29B; --ink-3: #9C8A66;
+  --line: #3A2E1A; --honey: #FFB627; --honey-deep: #FFC85A; --honey-ink: #1E1608; --comb: #FFB627;
+  --band: #0C0905; --band-ink: #FFF3D6; --band-ink-2: #BFA676;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35); --overlay: rgba(0,0,0,.6);
+  --ok: #5BD08C; --ok-bg: #173323; --bad: #FF7B6E; --bad-bg: #3A1A16;
+  --s-wish: #CDBB98; --s-wish-bg: #2D2517; --s-contacted: #7DB3F0; --s-contacted-bg: #16263A;
+  --s-negotiation: #B898EE; --s-negotiation-bg: #261C38; --s-deal: #FFC85A; --s-deal-bg: #3A2A0C;
+  --s-onboarded: #5FD3CB; --s-onboarded-bg: #0F2E2C; --s-active: #5BD08C; --s-active-bg: #173323;
+  --s-paused: #A8A8A8; --s-paused-bg: #2A2A2A; --s-declined: #FF7B6E; --s-declined-bg: #3A1A16;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; line-height: 1.45; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--honey); outline-offset: 2px; }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1440px; margin: 0 auto; }
+
+/* Header band */
+.band { background: var(--band); color: var(--band-ink); position: relative; overflow: hidden; }
+.band::before {
+  content: ""; position: absolute; inset: 0; background: var(--comb); opacity: .13;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='98' viewBox='0 0 56 98'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66zm0 34V66M0 50v34l28 16 28-16V50' fill='none' stroke='black' stroke-width='1.4'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='98' viewBox='0 0 56 98'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66zm0 34V66M0 50v34l28 16 28-16V50' fill='none' stroke='black' stroke-width='1.4'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.band-inner { position: relative; padding-block: 28px 0; display: grid; gap: 22px; }
+.brand-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.mark { width: 46px; height: 46px; background: var(--honey); clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%); display: grid; place-items: center; color: var(--honey-ink); font-family: var(--f-display); font-weight: 700; font-size: 17px; }
+.wordmark { font-family: var(--f-display); font-weight: 700; font-size: clamp(24px, 4vw, 34px); letter-spacing: -.02em; line-height: 1; }
+.wordmark span { color: var(--honey); }
+.sub { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--band-ink-2); margin-top: 6px; font-weight: 600; }
+.btn-add { background: var(--honey); color: var(--honey-ink); border: 0; border-radius: 999px; padding: 12px 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 6px 20px rgba(245,163,0,.3); transition: transform .15s; }
+.btn-add:hover { transform: translateY(-1px); }
+.btn-add svg { width: 16px; height: 16px; }
+
+.markets { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.markets::-webkit-scrollbar { display: none; }
+.mkt { background: transparent; border: 0; color: var(--band-ink-2); padding: 12px 18px 14px; border-radius: 12px 12px 0 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; white-space: nowrap; }
+.mkt b { font-family: var(--f-display); font-weight: 600; font-size: 15px; color: var(--band-ink); display: flex; gap: 8px; align-items: center; }
+.mkt small { font-size: 12px; }
+.mkt .count { font-family: var(--f-mono); font-size: 12px; background: rgba(255,255,255,.1); padding: 1px 7px; border-radius: 99px; color: var(--band-ink); }
+.mkt[aria-selected="true"] { background: var(--bg); color: var(--ink-3); }
+.mkt[aria-selected="true"] b { color: var(--ink); }
+.mkt[aria-selected="true"] .count { background: var(--honey); color: var(--honey-ink); }
+
+/* Main */
+main { padding-block: 22px 60px; display: grid; gap: 20px; }
+main > .wrap, main .wrap > * { min-width: 0; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: grid; gap: 4px; min-width: 0; }
+.kpi .lbl { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; }
+.kpi .val { font-family: var(--f-display); font-weight: 600; font-size: 26px; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.kpi .hint { font-size: 12px; color: var(--ink-2); }
+.kpi.hero { background: var(--honey); border-color: var(--honey); color: var(--honey-ink); }
+.kpi.hero .lbl, .kpi.hero .hint { color: var(--honey-ink); opacity: .75; }
+
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.search { flex: 1 1 240px; min-width: 0; position: relative; }
+.search input { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px 10px 38px; }
+.search svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--ink-3); }
+.seg { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.seg button { border: 0; background: transparent; padding: 7px 14px; border-radius: 999px; font-weight: 600; color: var(--ink-2); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+select.pill { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 9px 14px; font-weight: 600; color: var(--ink-2); }
+
+.note { border: 1px dashed var(--line); border-radius: var(--r); padding: 12px 16px; color: var(--ink-2); background: var(--surface-2); }
+.note.err { border-color: var(--bad); color: var(--bad); background: var(--bad-bg); }
+
+/* Board */
+.board-scroll { overflow-x: auto; padding-bottom: 8px; margin-inline: -4px; }
+.board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(268px, 1fr); gap: 12px; padding-inline: 4px; min-height: 340px; }
+.col { background: var(--surface-2); border-radius: var(--r); padding: 10px; display: flex; flex-direction: column; gap: 8px; min-width: 0; border: 1px solid transparent; transition: border-color .15s, background .15s; }
+.col.drop { border-color: var(--honey); background: var(--surface); }
+.col-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 6px; }
+.col-head .count { font-family: var(--f-mono); font-size: 12px; color: var(--ink-3); }
+.col-empty { font-size: 12px; color: var(--ink-3); padding: 16px 8px; text-align: center; border: 1px dashed var(--line); border-radius: 10px; }
+
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.chip.plain::before { display: none; }
+.st-wish { --c: var(--s-wish); --cb: var(--s-wish-bg); }
+.st-contacted { --c: var(--s-contacted); --cb: var(--s-contacted-bg); }
+.st-negotiation { --c: var(--s-negotiation); --cb: var(--s-negotiation-bg); }
+.st-deal { --c: var(--s-deal); --cb: var(--s-deal-bg); }
+.st-onboarded { --c: var(--s-onboarded); --cb: var(--s-onboarded-bg); }
+.st-active { --c: var(--s-active); --cb: var(--s-active-bg); }
+.st-paused { --c: var(--s-paused); --cb: var(--s-paused-bg); }
+.st-declined { --c: var(--s-declined); --cb: var(--s-declined-bg); }
+.chip { color: var(--c, var(--ink-2)); background: var(--cb, var(--surface-2)); }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 10px; text-align: left; width: 100%; box-shadow: 0 1px 0 rgba(0,0,0,.02); transition: box-shadow .15s, transform .15s, border-color .15s; }
+.card:hover { box-shadow: var(--shadow); border-color: var(--honey); }
+.card[draggable="true"] { cursor: grab; }
+.card.dragging { opacity: .45; }
+.who { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.ava { flex: none; width: 40px; height: 40px; background: var(--honey); color: var(--honey-ink); clip-path: polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0 50%); display: grid; place-items: center; font-family: var(--f-display); font-weight: 600; font-size: 13px; text-transform: uppercase; }
+.ava.de { background: var(--ink); color: var(--honey); }
+.ava.lg { width: 64px; height: 64px; font-size: 20px; }
+.who-txt { min-width: 0; display: grid; }
+.who-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.who-handle { font-family: var(--f-mono); font-size: 12px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--ink-2); }
+.meta .dot { width: 3px; height: 3px; background: var(--ink-3); border-radius: 50%; }
+.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.deal { font-size: 12px; font-weight: 600; color: var(--honey-deep); background: var(--surface-2); padding: 6px 8px; border-radius: 8px; overflow-wrap: anywhere; }
+.deal.none { color: var(--ink-3); font-weight: 500; background: transparent; padding: 0; }
+.mtag { font-family: var(--f-mono); font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 5px; border: 1px solid var(--line); color: var(--ink-2); }
+
+/* List */
+.table-scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+table { width: 100%; border-collapse: collapse; min-width: 880px; }
+th { text-align: left; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; padding: 12px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+tbody tr { cursor: pointer; }
+tbody tr:hover td { background: var(--surface-2); }
+
+/* Empty state */
+.empty { background: var(--surface); border: 1px dashed var(--line); border-radius: var(--r); padding: 44px 20px; text-align: center; display: grid; gap: 10px; justify-items: center; }
+.empty h3 { font-family: var(--f-display); font-weight: 600; font-size: 20px; margin: 0; text-wrap: balance; }
+.empty p { margin: 0; color: var(--ink-2); max-width: 46ch; }
+
+/* Drawer + modal */
+.overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 40; animation: fade .15s ease; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(580px, 100vw); background: var(--bg); z-index: 41; display: flex; flex-direction: column; box-shadow: -10px 0 40px rgba(0,0,0,.2); animation: slide .2s ease; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.d-head { padding: 20px 22px 16px; border-bottom: 1px solid var(--line); display: grid; gap: 14px; background: var(--surface); }
+.d-top { display: flex; gap: 14px; align-items: center; }
+.d-top h2 { font-family: var(--f-display); font-weight: 600; font-size: 20px; margin: 0; line-height: 1.15; overflow-wrap: anywhere; }
+.d-top a { color: var(--honey-deep); font-family: var(--f-mono); font-size: 13px; text-decoration: none; }
+.d-top a:hover { text-decoration: underline; }
+.x { margin-left: auto; align-self: flex-start; background: var(--surface-2); border: 0; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.x svg { width: 16px; height: 16px; }
+.stages { display: flex; gap: 6px; flex-wrap: wrap; }
+.stages button { border: 1px solid var(--line); background: var(--surface); padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; color: var(--ink-2); }
+.stages button[aria-pressed="true"] { border-color: transparent; color: var(--c); background: var(--cb); }
+.d-body { overflow-y: auto; padding: 18px 22px 30px; display: grid; gap: 22px; align-content: start; }
+.sec { display: grid; gap: 12px; }
+.sec h3 { margin: 0; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); font-weight: 800; display: flex; align-items: center; gap: 10px; }
+.sec h3::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 480px) { .grid2 { grid-template-columns: 1fr; } }
+.f { display: grid; gap: 5px; min-width: 0; }
+.f label, .f .lab { font-size: 12px; font-weight: 600; color: var(--ink-2); }
+.f input, .f select, .f textarea { width: 100%; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; min-width: 0; }
+.f textarea { min-height: 96px; resize: vertical; }
+.f input:focus, .f select:focus, .f textarea:focus { border-color: var(--honey); outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--honey) 25%, transparent); }
+.f input:disabled, .f select:disabled, .f textarea:disabled { opacity: .7; }
+.affix { position: relative; }
+.affix span { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); color: var(--ink-3); font-family: var(--f-mono); font-size: 12px; pointer-events: none; }
+.models { display: flex; gap: 8px; flex-wrap: wrap; }
+.models label { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: var(--surface); padding: 7px 12px; border-radius: 999px; font-weight: 600; font-size: 13px; cursor: pointer; }
+.models input { accent-color: var(--honey); margin: 0; }
+.models label:has(input:checked) { border-color: var(--honey); background: var(--surface-2); color: var(--honey-deep); }
+.log { display: grid; gap: 8px; }
+.log div { display: grid; grid-template-columns: 92px 1fr; gap: 10px; font-size: 13px; }
+.log time { font-family: var(--f-mono); font-size: 11px; color: var(--ink-3); padding-top: 2px; }
+.danger { justify-self: start; border: 1px solid var(--line); background: transparent; color: var(--bad); padding: 8px 14px; border-radius: 999px; font-weight: 600; }
+.danger.armed { background: var(--bad); color: #fff; border-color: var(--bad); }
+
+.modal { position: fixed; z-index: 41; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow-y: auto; background: var(--bg); border-radius: 20px; box-shadow: var(--shadow); animation: pop .18s ease; }
+.m-head { padding: 22px 24px 6px; display: flex; gap: 12px; align-items: flex-start; }
+.m-head h2 { margin: 0; font-family: var(--f-display); font-weight: 600; font-size: 21px; }
+.m-head p { margin: 4px 0 0; color: var(--ink-2); }
+.m-body { padding: 14px 24px 24px; display: grid; gap: 14px; }
+.mkt-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mkt-pick label { border: 1.5px solid var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 2px; cursor: pointer; background: var(--surface); }
+.mkt-pick input { position: absolute; opacity: 0; pointer-events: none; }
+.mkt-pick label:has(input:checked) { border-color: var(--honey); background: var(--surface-2); }
+.mkt-pick label:has(input:focus-visible) { outline: 2px solid var(--honey); outline-offset: 2px; }
+.mkt-pick b { font-family: var(--f-display); font-weight: 600; font-size: 14px; }
+.mkt-pick small { color: var(--ink-3); }
+.primary { background: var(--ink); color: var(--bg); border: 0; border-radius: 999px; padding: 12px 20px; font-weight: 700; }
+.primary:disabled { opacity: .5; cursor: default; }
+.preview { display: flex; flex-wrap: wrap; gap: 6px; }
+.preview span { font-family: var(--f-mono); font-size: 12px; padding: 3px 8px; border-radius: 6px; background: var(--surface-2); color: var(--ink-2); }
+.preview span.bad { background: var(--bad-bg); color: var(--bad); }
+.preview span.dup { text-decoration: line-through; opacity: .7; }
+
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-weight: 600; z-index: 60; box-shadow: var(--shadow); max-width: calc(100vw - 32px); animation: pop .2s ease; }
+
+@keyframes fade { from { opacity: 0; } }
+@keyframes slide { from { transform: translateX(30px); opacity: 0; } }
+@keyframes pop { from { opacity: 0; scale: .97; } }
+@media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
+@media (max-width: 560px) { .btn-add .long { display: none; } .kpi .val { font-size: 22px; } }
+</style>
+
+<header class="band">
+  <div class="gutter"><div class="wrap band-inner">
+    <div class="brand-row">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">hh</div>
+        <div>
+          <div class="wordmark">hey honey<span>.</span></div>
+          <div class="sub">Partner Hub · Creator &amp; Affiliates</div>
+        </div>
+      </div>
+      <button class="btn-add" id="btn-add" type="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+        <span>Creator <span class="long">hinzufügen</span></span>
+      </button>
+    </div>
+    <nav class="markets" role="tablist" aria-label="Markt" id="markets"></nav>
+  </div></div>
+</header>
+
+<main class="gutter">
+  <div class="wrap" style="display:grid; gap:20px;">
+    <div id="status" hidden></div>
+    <section class="kpis" id="kpis" aria-label="Kennzahlen"></section>
+    <div class="toolbar">
+      <div class="search">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="m11 11 3.5 3.5" stroke-linecap="round"/></svg>
+        <input id="q" type="search" placeholder="Suchen: Name, @handle, Nische, Code …" aria-label="Creator suchen">
+      </div>
+      <select class="pill" id="stage-filter" aria-label="Status filtern"></select>
+      <div class="seg" role="group" aria-label="Ansicht">
+        <button type="button" id="v-board" aria-pressed="true">Board</button>
+        <button type="button" id="v-list" aria-pressed="false">Liste</button>
+      </div>
+    </div>
+    <section id="view" aria-live="polite"></section>
+  </div>
+</main>
+
+<div id="layer"></div>
+
+<script>
+(() => {
+  const STAGES = [
+    { k: "wish", l: "Wunschliste" },
+    { k: "contacted", l: "Kontaktiert" },
+    { k: "negotiation", l: "In Verhandlung" },
+    { k: "deal", l: "Deal steht" },
+    { k: "onboarded", l: "Onboarded" },
+    { k: "active", l: "Aktiv" },
+    { k: "paused", l: "Pausiert" },
+    { k: "declined", l: "Abgesagt" },
+  ];
+  const STAGE = Object.fromEntries(STAGES.map(s => [s.k, s]));
+  const MARKETS = {
+    int: { l: "International", lead: "Jack Hopkins", cur: "USD", hash: "international" },
+    de: { l: "Deutschland", lead: "Hey Honey DE", cur: "EUR", hash: "deutschland" },
+  };
+  const MODELS = [
+    { k: "affiliate", l: "Affiliate %" },
+    { k: "fixed", l: "Fixbetrag" },
+    { k: "gifting", l: "Gifting" },
+    { k: "code", l: "Rabattcode" },
+  ];
+  const INTERVALS = { post: "pro Post", month: "pro Monat", once: "einmalig", campaign: "pro Kampagne" };
+  const CONTRACT = { none: "Kein Vertrag", draft: "Entwurf", sent: "Verschickt", signed: "Unterschrieben" };
+  const NICHES = ["Beauty", "Skincare", "Food", "Lifestyle", "Fitness", "Wellness", "Mom/Family", "Business", "Digital/Tech", "Fashion", "Travel"];
+  const RESERVED = new Set(["p", "reel", "reels", "stories", "explore", "tv", "accounts", "direct"]);
+
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const nf = new Intl.NumberFormat("de-DE");
+  const compact = n => n == null || n === "" || isNaN(n) ? "–" : new Intl.NumberFormat("de-DE", { notation: "compact", maximumFractionDigits: 1 }).format(n);
+  const money = (n, cur) => new Intl.NumberFormat("de-DE", { style: "currency", currency: cur || "EUR", maximumFractionDigits: 0 }).format(n);
+  const fmtDate = t => t ? new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" }).format(new Date(t)) : "–";
+  const fmtDT = t => new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(t));
+
+  const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+
+  const state = {
+    creators: new Map(),
+    market: "all",
+    view: store.get("hh-view") === "list" ? "list" : "board",
+    q: "",
+    stage: "",
+    openId: null,
+    loaded: false,
+    canWrite: true,
+  };
+  let db = null, user = null, meId = null;
+
+  /* ---------- helpers ---------- */
+  function displayName(c) { return c.name || c.handle || "Unbenannt"; }
+  function initials(c) {
+    const src = (c.name || c.handle || "?").replace(/[^a-zA-ZÀ-ž0-9 ]/g, " ").trim();
+    const parts = src.split(/\s+/).filter(Boolean);
+    return (parts.length > 1 ? parts[0][0] + parts[1][0] : src.slice(0, 2)) || "?";
+  }
+  function safeUrl(u) { return typeof u === "string" && /^https:\/\//i.test(u) ? u : null; }
+  function dealSummary(c) {
+    const m = c.models || [], p = [];
+    if (m.includes("affiliate") && c.affiliatePct != null && c.affiliatePct !== "") p.push(`${nf.format(c.affiliatePct)} % Affiliate`);
+    if (m.includes("fixed") && c.fixedFee) p.push(`${money(c.fixedFee, c.currency)} ${INTERVALS[c.feeInterval] || ""}`.trim());
+    if (m.includes("gifting")) p.push("Gifting");
+    if (m.includes("code") && c.discountCode) p.push(`Code ${c.discountCode}`);
+    return p.join(" · ");
+  }
+  function visible() {
+    const q = state.q.trim().toLowerCase();
+    return [...state.creators.values()]
+      .filter(c => state.market === "all" || c.market === state.market)
+      .filter(c => !state.stage || c.stage === state.stage)
+      .filter(c => !q || [c.name, c.handle, c.niche, c.country, c.discountCode, c.notes, c.owner].some(v => String(v || "").toLowerCase().includes(q)))
+      .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  }
+  function toast(msg) {
+    document.querySelectorAll(".toast").forEach(t => t.remove());
+    const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; t.setAttribute("role", "status");
+    document.body.appendChild(t); setTimeout(() => t.remove(), 2600);
+  }
+  function parseEntry(raw) {
+    const line = raw.trim().replace(/[,;]+$/, "");
+    if (!line) return null;
+    let platform = "instagram", handle = line;
+    if (/^(https?:\/\/)?([a-z]+\.)?(instagram\.com|tiktok\.com)\//i.test(line)) {
+      try {
+        const u = new URL(/^https?:/i.test(line) ? line : "https://" + line);
+        const seg = u.pathname.split("/").filter(Boolean);
+        if (/tiktok/i.test(u.hostname)) { platform = "tiktok"; handle = (seg[0] || "").replace(/^@/, ""); }
+        else { handle = seg[0] || ""; if (RESERVED.has(handle.toLowerCase())) return { error: line }; }
+      } catch { return { error: line }; }
+    }
+    handle = handle.replace(/^@/, "").toLowerCase();
+    if (!/^[a-z0-9._]{1,30}$/.test(handle)) return { error: line };
+    const url = platform === "tiktok" ? `https://www.tiktok.com/@${handle}` : `https://www.instagram.com/${handle}/`;
+    return { handle, platform, url };
+  }
+  function isDup(handle, market) { return [...state.creators.values()].some(c => c.handle === handle && c.market === market); }
+
+  /* ---------- writes ---------- */
+  const chains = new Map();
+  function queue(id, fn) {
+    const prev = chains.get(id) || Promise.resolve();
+    const next = prev.then(fn, fn);
+    chains.set(id, next.catch(() => {}));
+    return next;
+  }
+  function writeError(e) {
+    const code = e && e.code;
+    if (code === "invalid_argument") { state.canWrite = false; toast("Du hast hier nur Leserechte."); render(); }
+    else if (code === "quota_exceeded") toast("Speicher voll: bitte alte Einträge löschen.");
+    else toast("Speichern hat nicht geklappt. Versuch es gleich nochmal.");
+  }
+  function patch(id, fields, logText) {
+    if (!db) return toast("Keine Verbindung zur Datenbank.");
+    const c = state.creators.get(id); if (!c) return;
+    const data = { ...fields, updatedAt: Date.now() };
+    if (logText) {
+      const act = (c.activity || []).slice(-29);
+      act.push({ t: Date.now(), text: logText, by: meId || null });
+      data.activity = act;
+    }
+    Object.assign(c, data); // optimistic
+    return queue(id, () => db.collection("creators").doc(id).update(data)).catch(writeError);
+  }
+
+  /* ---------- render: header ---------- */
+  function renderMarkets() {
+    const all = [...state.creators.values()];
+    const count = k => k === "all" ? all.length : all.filter(c => c.market === k).length;
+    const items = [
+      { k: "all", t: "Alle Märkte", s: "Gesamter Pool" },
+      { k: "int", t: "International", s: `Lead: ${MARKETS.int.lead}` },
+      { k: "de", t: "Deutschland", s: `Lead: ${MARKETS.de.lead}` },
+    ];
+    $("#markets").innerHTML = items.map(i => `
+      <button class="mkt" role="tab" type="button" data-m="${i.k}" aria-selected="${state.market === i.k}">
+        <b>${esc(i.t)} <span class="count">${count(i.k)}</span></b><small>${esc(i.s)}</small>
+      </button>`).join("");
+  }
+
+  function renderKpis() {
+    const list = [...state.creators.values()].filter(c => state.market === "all" || c.market === state.market);
+    const signed = list.filter(c => ["deal", "onboarded", "active"].includes(c.stage));
+    const live = list.filter(c => ["onboarded", "active"].includes(c.stage));
+    const paid = list.filter(c => (c.models || []).includes("fixed") && Number(c.fixedFee) > 0);
+    const pcts = list.filter(c => (c.models || []).includes("affiliate") && c.affiliatePct !== "" && c.affiliatePct != null).map(c => Number(c.affiliatePct));
+    const avg = pcts.length ? pcts.reduce((a, b) => a + b, 0) / pcts.length : null;
+    const reach = list.reduce((s, c) => s + (Number(c.followers) || 0), 0);
+    const pipe = list.filter(c => ["wish", "contacted", "negotiation"].includes(c.stage)).length;
+    $("#kpis").innerHTML = `
+      <div class="kpi hero"><span class="lbl">Creator im Pool</span><span class="val">${nf.format(list.length)}</span><span class="hint">${pipe} in der Pipeline</span></div>
+      <div class="kpi"><span class="lbl">Deals</span><span class="val">${nf.format(signed.length)}</span><span class="hint">${live.length} onboarded oder aktiv</span></div>
+      <div class="kpi"><span class="lbl">Bezahlte Deals</span><span class="val">${nf.format(paid.length)}</span><span class="hint">mit Fixbetrag</span></div>
+      <div class="kpi"><span class="lbl">Ø Affiliate</span><span class="val">${avg == null ? "–" : nf.format(Math.round(avg * 10) / 10) + " %"}</span><span class="hint">${pcts.length} Affiliate-Deals</span></div>
+      <div class="kpi"><span class="lbl">Reichweite</span><span class="val">${compact(reach)}</span><span class="hint">Follower gesamt</span></div>`;
+  }
+
+  function renderStageFilter() {
+    const sel = $("#stage-filter");
+    if (!sel.options.length) sel.innerHTML = `<option value="">Alle Status</option>` + STAGES.map(s => `<option value="${s.k}">${esc(s.l)}</option>`).join("");
+    sel.value = state.stage;
+  }
+
+  /* ---------- render: main ---------- */
+  function cardHTML(c) {
+    const deal = dealSummary(c);
+    const mtag = state.market === "all" ? `<span class="mtag">${c.market === "de" ? "DE" : "INT"}</span>` : "";
+    const plat = c.platform === "tiktok" ? "TikTok" : "IG";
+    return `
+      <button class="card" type="button" data-id="${esc(c.id)}" draggable="${state.canWrite}">
+        <div class="who">
+          <div class="ava ${c.market === "de" ? "de" : ""}" aria-hidden="true">${esc(initials(c))}</div>
+          <div class="who-txt"><span class="who-name">${esc(displayName(c))}</span><span class="who-handle">${esc(plat)} · @${esc(c.handle)}</span></div>
+        </div>
+        <div class="meta">
+          ${mtag}
+          <span class="num">${compact(c.followers)}</span><span>Follower</span>
+          ${c.niche ? `<span class="dot"></span><span>${esc(c.niche)}</span>` : ""}
+        </div>
+        ${deal ? `<div class="deal">${esc(deal)}</div>` : `<div class="deal none">Noch kein Deal</div>`}
+      </button>`;
+  }
+
+  function renderBoard(list) {
+    const stages = state.stage ? STAGES.filter(s => s.k === state.stage) : STAGES;
+    $("#view").innerHTML = `<div class="board-scroll"><div class="board">${stages.map(s => {
+      const items = list.filter(c => (c.stage || "wish") === s.k);
+      return `<div class="col" data-stage="${s.k}">
+        <div class="col-head"><span class="chip st-${s.k}">${esc(s.l)}</span><span class="count">${items.length}</span></div>
+        ${items.length ? items.map(cardHTML).join("") : `<div class="col-empty">${state.canWrite ? "Hierher ziehen" : "Leer"}</div>`}
+      </div>`;
+    }).join("")}</div></div>`;
+  }
+
+  function renderList(list) {
+    $("#view").innerHTML = `<div class="table-scroll"><table>
+      <thead><tr><th>Creator</th><th>Markt</th><th>Status</th><th>Follower</th><th>Nische</th><th>Deal</th><th>Vertrag</th><th>Aktualisiert</th></tr></thead>
+      <tbody>${list.map(c => `<tr data-id="${esc(c.id)}" tabindex="0">
+        <td><div class="who"><div class="ava ${c.market === "de" ? "de" : ""}" aria-hidden="true">${esc(initials(c))}</div><div class="who-txt"><span class="who-name">${esc(displayName(c))}</span><span class="who-handle">@${esc(c.handle)}</span></div></div></td>
+        <td>${c.market === "de" ? "Deutschland" : "International"}</td>
+        <td><span class="chip st-${esc(c.stage || "wish")}">${esc((STAGE[c.stage] || STAGE.wish).l)}</span></td>
+        <td class="num">${compact(c.followers)}</td>
+        <td>${esc(c.niche || "–")}</td>
+        <td>${esc(dealSummary(c) || "–")}</td>
+        <td>${esc(CONTRACT[c.contract] || "–")}</td>
+        <td class="num">${fmtDate(c.updatedAt)}</td>
+      </tr>`).join("")}</tbody></table></div>`;
+  }
+
+  function renderEmpty() {
+    const total = [...state.creators.values()].filter(c => state.market === "all" || c.market === state.market).length;
+    const mk = MARKETS[state.market];
+    if (!state.loaded) {
+      $("#view").innerHTML = `<div class="empty"><h3>Lade Creator …</h3><p>Der Pool wird gerade synchronisiert.</p></div>`;
+      return;
+    }
+    $("#view").innerHTML = total
+      ? `<div class="empty"><h3>Keine Treffer</h3><p>Kein Creator passt auf Suche oder Filter. Filter zurücksetzen und nochmal schauen.</p></div>`
+      : `<div class="empty"><h3>${mk ? `Noch keine Creator für ${esc(mk.l)}` : "Der Pool ist noch leer"}</h3>
+         <p>Instagram-Link oder @handle einfügen, Markt wählen, fertig. Mehrere Links auf einmal gehen auch, einer pro Zeile.</p>
+         ${state.canWrite ? `<button class="btn-add" type="button" data-act="add">Ersten Creator hinzufügen</button>` : ""}</div>`;
+  }
+
+  function render() {
+    renderMarkets(); renderKpis(); renderStageFilter();
+    $("#v-board").setAttribute("aria-pressed", state.view === "board");
+    $("#v-list").setAttribute("aria-pressed", state.view === "list");
+    $("#btn-add").hidden = !state.canWrite;
+    const list = visible();
+    if (!list.length) renderEmpty();
+    else if (state.view === "board") renderBoard(list);
+    else renderList(list);
+    if (state.openId) refreshDrawer();
+  }
+
+  /* ---------- drawer ---------- */
+  function openDrawer(id) { state.openId = id; buildDrawer(); }
+  function closeLayer() { state.openId = null; $("#layer").innerHTML = ""; }
+
+  function field(c, key, label, type = "text", extra = "") {
+    const v = c[key] ?? "";
+    return `<div class="f"><label for="f-${key}">${label}</label><input id="f-${key}" data-field="${key}" type="${type}" value="${esc(v)}" ${extra} ${state.canWrite ? "" : "disabled"}></div>`;
+  }
+  function selectField(c, key, label, opts) {
+    return `<div class="f"><label for="f-${key}">${label}</label><select id="f-${key}" data-field="${key}" ${state.canWrite ? "" : "disabled"}>
+      ${Object.entries(opts).map(([k, l]) => `<option value="${esc(k)}" ${String(c[key] ?? "") === k ? "selected" : ""}>${esc(l)}</option>`).join("")}</select></div>`;
+  }
+
+  function buildDrawer() {
+    const c = state.creators.get(state.openId);
+    if (!c) return closeLayer();
+    const dis = state.canWrite ? "" : "disabled";
+    const url = safeUrl(c.url);
+    const models = c.models || [];
+    $("#layer").innerHTML = `
+      <div class="overlay" data-act="close"></div>
+      <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="d-title">
+        <div class="d-head">
+          <div class="d-top">
+            <div class="ava lg ${c.market === "de" ? "de" : ""}" aria-hidden="true">${esc(initials(c))}</div>
+            <div style="min-width:0; display:grid; gap:3px;">
+              <h2 id="d-title">${esc(displayName(c))}</h2>
+              ${url ? `<a href="${esc(url)}" target="_blank" rel="noopener">@${esc(c.handle)} ↗</a>` : `<span class="who-handle">@${esc(c.handle)}</span>`}
+              <span class="who-handle">${c.market === "de" ? "Deutschland" : "International · " + esc(MARKETS.int.lead)}</span>
+            </div>
+            <button class="x" type="button" data-act="close" aria-label="Schließen"><svg viewBox="0 0 16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+          </div>
+          <div class="stages" role="group" aria-label="Status">
+            ${STAGES.map(s => `<button type="button" data-stage="${s.k}" class="${c.stage === s.k ? "st-" + s.k : ""}" aria-pressed="${c.stage === s.k}" ${dis}>${esc(s.l)}</button>`).join("")}
+          </div>
+        </div>
+        <div class="d-body">
+          <section class="sec"><h3>Profil</h3>
+            <div class="grid2">
+              ${field(c, "name", "Name")}
+              ${field(c, "handle", "Handle")}
+              ${field(c, "followers", "Follower", "number", 'min="0" step="1" inputmode="numeric"')}
+              <div class="f"><label for="f-niche">Nische</label><input id="f-niche" data-field="niche" list="niches" value="${esc(c.niche || "")}" ${dis}></div>
+              ${field(c, "country", "Land / Stadt")}
+              ${selectField(c, "market", "Markt", { int: "International (Jack)", de: "Deutschland" })}
+              ${field(c, "contact", "Kontakt (Mail / Manager)")}
+              ${field(c, "owner", "Betreut von")}
+            </div>
+            <datalist id="niches">${NICHES.map(n => `<option value="${esc(n)}">`).join("")}</datalist>
+          </section>
+
+          <section class="sec"><h3>Deal</h3>
+            <div class="models" role="group" aria-label="Deal-Modell">
+              ${MODELS.map(m => `<label><input type="checkbox" data-model="${m.k}" ${models.includes(m.k) ? "checked" : ""} ${dis}>${esc(m.l)}</label>`).join("")}
+            </div>
+            <div class="grid2">
+              <div class="f"><label for="f-affiliatePct">Affiliate-Provision</label><div class="affix"><input id="f-affiliatePct" data-field="affiliatePct" type="number" min="0" max="100" step="0.5" inputmode="decimal" value="${esc(c.affiliatePct ?? "")}" ${dis}><span>%</span></div></div>
+              ${field(c, "discountCode", "Rabattcode", "text", 'autocapitalize="characters"')}
+              ${field(c, "fixedFee", "Fixbetrag", "number", 'min="0" step="50" inputmode="decimal"')}
+              ${selectField(c, "feeInterval", "Intervall", INTERVALS)}
+              ${selectField(c, "currency", "Währung", { EUR: "EUR €", USD: "USD $", GBP: "GBP £", CHF: "CHF" })}
+              ${selectField(c, "contract", "Vertrag", CONTRACT)}
+              ${field(c, "startDate", "Start", "date")}
+              ${field(c, "endDate", "Ende", "date")}
+            </div>
+          </section>
+
+          <section class="sec"><h3>Notizen</h3>
+            <div class="f"><textarea id="f-notes" data-field="notes" aria-label="Notizen" placeholder="Content-Stil, Zielgruppe, Absprachen, nächste Schritte …" ${dis}>${esc(c.notes || "")}</textarea></div>
+          </section>
+
+          <section class="sec"><h3>Verlauf</h3><div class="log" id="log"></div></section>
+
+          ${state.canWrite ? `<button class="danger" type="button" data-act="delete">Creator löschen</button>` : ""}
+        </div>
+      </aside>`;
+    renderLog(c);
+  }
+
+  async function renderLog(c) {
+    const el = $("#log"); if (!el) return;
+    const acts = (c.activity || []).slice().reverse();
+    if (!acts.length) { el.innerHTML = `<div><time>–</time><span>Noch keine Einträge.</span></div>`; return; }
+    let ps = {};
+    const ids = [...new Set(acts.map(a => a.by).filter(Boolean))];
+    if (user && ids.length) { try { ps = await user.profiles(ids); } catch {} }
+    el.innerHTML = "";
+    acts.forEach(a => {
+      const row = document.createElement("div");
+      const t = document.createElement("time"); t.textContent = fmtDT(a.t);
+      const s = document.createElement("span");
+      const who = a.by && ps[a.by] && ps[a.by].name ? ` · ${ps[a.by].name}` : "";
+      s.textContent = a.text + who;
+      row.append(t, s); el.appendChild(row);
+    });
+  }
+
+  function refreshDrawer() {
+    const drawer = document.querySelector(".drawer");
+    if (!drawer) return;
+    const c = state.creators.get(state.openId);
+    if (!c) return closeLayer();
+    if (drawer.contains(document.activeElement) && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+    const scroll = drawer.querySelector(".d-body").scrollTop;
+    buildDrawer();
+    document.querySelector(".drawer .d-body").scrollTop = scroll;
+  }
+
+  /* ---------- add modal ---------- */
+  function openAdd() {
+    if (!state.canWrite) return;
+    const pre = state.market === "all" ? "" : state.market;
+    $("#layer").innerHTML = `
+      <div class="overlay" data-act="close"></div>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+        <form id="add-form" novalidate>
+          <div class="m-head">
+            <div><h2 id="m-title">Creator reinposten</h2><p>Link oder @handle einfügen. Mehrere gehen auch, einer pro Zeile.</p></div>
+            <button class="x" type="button" data-act="close" aria-label="Schließen"><svg viewBox="0 0 16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+          </div>
+          <div class="m-body">
+            <div class="f"><label for="a-links">Instagram- oder TikTok-Links</label>
+              <textarea id="a-links" rows="4" placeholder="https://www.instagram.com/creatorname&#10;@nochjemand"></textarea></div>
+            <div class="preview" id="a-preview" aria-live="polite"></div>
+            <div class="f"><span class="lab">Markt</span>
+              <div class="mkt-pick">
+                <label><input type="radio" name="a-market" value="int" ${pre === "int" ? "checked" : ""}><b>International</b><small>Lead: ${esc(MARKETS.int.lead)}</small></label>
+                <label><input type="radio" name="a-market" value="de" ${pre === "de" ? "checked" : ""}><b>Deutschland</b><small>Lead: ${esc(MARKETS.de.lead)}</small></label>
+              </div></div>
+            <div class="grid2">
+              <div class="f"><label for="a-niche">Nische (optional)</label><input id="a-niche" list="a-niches"><datalist id="a-niches">${NICHES.map(n => `<option value="${esc(n)}">`).join("")}</datalist></div>
+              <div class="f"><label for="a-stage">Status</label><select id="a-stage">${STAGES.slice(0, 4).map(s => `<option value="${s.k}">${esc(s.l)}</option>`).join("")}</select></div>
+            </div>
+            <button class="primary" type="submit" id="a-submit" disabled>Hinzufügen</button>
+          </div>
+        </form>
+      </div>`;
+    const ta = $("#a-links");
+    const upd = () => {
+      const market = (document.querySelector('input[name="a-market"]:checked') || {}).value;
+      const entries = ta.value.split(/\n|\s{2,}/).map(parseEntry).filter(Boolean);
+      $("#a-preview").innerHTML = entries.map(e => e.error
+        ? `<span class="bad">${esc(e.error.slice(0, 40))} ✕</span>`
+        : `<span class="${market && isDup(e.handle, market) ? "dup" : ""}">@${esc(e.handle)}</span>`).join("");
+      const ok = entries.filter(e => !e.error && !(market && isDup(e.handle, market)));
+      const btn = $("#a-submit");
+      btn.disabled = !market || !ok.length;
+      btn.textContent = !market ? "Markt wählen" : ok.length > 1 ? `${ok.length} Creator hinzufügen` : "Hinzufügen";
+    };
+    ta.addEventListener("input", upd);
+    document.querySelectorAll('input[name="a-market"]').forEach(r => r.addEventListener("change", upd));
+    $("#add-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const market = (document.querySelector('input[name="a-market"]:checked') || {}).value;
+      if (!market || !db) return;
+      const seen = new Set();
+      const entries = ta.value.split(/\n|\s{2,}/).map(parseEntry).filter(x => x && !x.error && !isDup(x.handle, market) && !seen.has(x.handle) && seen.add(x.handle));
+      if (!entries.length) return;
+      $("#a-submit").disabled = true;
+      const niche = $("#a-niche").value.trim(), stage = $("#a-stage").value, now = Date.now();
+      let added = 0;
+      for (const en of entries) {
+        const ref = db.collection("creators").doc();
+        const doc = {
+          handle: en.handle, platform: en.platform, url: en.url, name: "", market, stage,
+          followers: null, niche, country: "", contact: "", owner: "",
+          models: [], affiliatePct: null, fixedFee: null, feeInterval: "post", currency: MARKETS[market].cur,
+          discountCode: "", contract: "none", startDate: "", endDate: "", notes: "",
+          addedBy: meId || null, createdAt: now, updatedAt: now,
+          activity: [{ t: now, text: `Hinzugefügt · ${STAGE[stage].l}`, by: meId || null }],
+        };
+        try { await ref.set(doc); added++; } catch (err) { writeError(err); break; }
+      }
+      closeLayer();
+      if (added) toast(added === 1 ? `@${entries[0].handle} ist drin.` : `${added} Creator sind drin.`);
+    });
+    setTimeout(() => ta.focus(), 30);
+  }
+
+  /* ---------- events ---------- */
+  document.addEventListener("click", e => {
+    const t = e.target.closest("[data-m], [data-act], .card, tbody tr, .stages [data-stage]");
+    if (!t) return;
+    if (t.dataset.m) { setMarket(t.dataset.m); return; }
+    if (t.matches(".stages [data-stage]")) {
+      const c = state.creators.get(state.openId); const k = t.dataset.stage;
+      if (c && c.stage !== k && state.canWrite) { patch(c.id, { stage: k }, `Status → ${STAGE[k].l}`); render(); buildDrawer(); }
+      return;
+    }
+    const act = t.dataset.act;
+    if (act === "close") return closeLayer();
+    if (act === "add") return openAdd();
+    if (act === "delete") {
+      if (!t.classList.contains("armed")) { t.classList.add("armed"); t.textContent = "Wirklich löschen? Nochmal klicken"; setTimeout(() => { if (t.isConnected) { t.classList.remove("armed"); t.textContent = "Creator löschen"; } }, 4000); return; }
+      const id = state.openId, c = state.creators.get(id);
+      closeLayer();
+      queue(id, () => db.collection("creators").doc(id).delete()).then(() => toast(`@${c ? c.handle : ""} gelöscht.`)).catch(writeError);
+      return;
+    }
+    if (t.dataset.id) openDrawer(t.dataset.id);
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && $("#layer").innerHTML) closeLayer();
+    if (e.key === "Enter" && e.target.matches("tbody tr")) openDrawer(e.target.dataset.id);
+  });
+  document.addEventListener("change", e => {
+    const el = e.target, c = state.creators.get(state.openId);
+    if (!c || !el.closest(".drawer")) return;
+    if (el.dataset.model) {
+      const models = [...document.querySelectorAll(".drawer [data-model]")].filter(x => x.checked).map(x => x.dataset.model);
+      patch(c.id, { models }, "Deal-Modell angepasst"); render(); return;
+    }
+    const key = el.dataset.field; if (!key) return;
+    let v = el.value;
+    if (el.type === "number") v = v === "" ? null : Number(v);
+    else if (key === "handle") { v = v.replace(/^@/, "").trim().toLowerCase(); if (!/^[a-z0-9._]{1,30}$/.test(v)) { toast("Handle: nur Buchstaben, Zahlen, Punkt, Unterstrich."); el.value = c.handle; return; } }
+    else if (key === "discountCode") v = v.trim().toUpperCase();
+    else if (typeof v === "string" && key !== "notes") v = v.trim();
+    if ((c[key] ?? "") === (v ?? "")) return;
+    const extra = {};
+    if (key === "handle") extra.url = c.platform === "tiktok" ? `https://www.tiktok.com/@${v}` : `https://www.instagram.com/${v}/`;
+    const logs = { market: `Markt → ${v === "de" ? "Deutschland" : "International"}`, affiliatePct: v == null ? "Affiliate-% entfernt" : `Affiliate → ${nf.format(v)} %`, fixedFee: v == null ? "Fixbetrag entfernt" : `Fixbetrag → ${money(v, c.currency)}`, contract: `Vertrag → ${CONTRACT[v]}`, discountCode: v ? `Rabattcode → ${v}` : null };
+    patch(c.id, { [key]: v, ...extra }, logs[key] || null);
+    render();
+  });
+
+  $("#btn-add").addEventListener("click", openAdd);
+  $("#q").addEventListener("input", e => { state.q = e.target.value; render(); });
+  $("#stage-filter").addEventListener("change", e => { state.stage = e.target.value; render(); });
+  $("#v-board").addEventListener("click", () => { state.view = "board"; store.set("hh-view", "board"); render(); });
+  $("#v-list").addEventListener("click", () => { state.view = "list"; store.set("hh-view", "list"); render(); });
+
+  // drag & drop between stages
+  let dragId = null;
+  document.addEventListener("dragstart", e => { const card = e.target.closest && e.target.closest(".card"); if (!card || !state.canWrite) return; dragId = card.dataset.id; card.classList.add("dragging"); e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/plain", dragId); } catch {} });
+  document.addEventListener("dragend", () => { dragId = null; document.querySelectorAll(".dragging, .col.drop").forEach(x => x.classList.remove("dragging", "drop")); });
+  document.addEventListener("dragover", e => { const col = e.target.closest && e.target.closest(".col"); if (!col || !dragId) return; e.preventDefault(); document.querySelectorAll(".col.drop").forEach(x => x !== col && x.classList.remove("drop")); col.classList.add("drop"); });
+  document.addEventListener("drop", e => {
+    const col = e.target.closest && e.target.closest(".col"); if (!col || !dragId) return;
+    e.preventDefault(); const k = col.dataset.stage, c = state.creators.get(dragId);
+    if (c && c.stage !== k) { patch(c.id, { stage: k }, `Status → ${STAGE[k].l}`); toast(`@${c.handle} → ${STAGE[k].l}`); }
+    dragId = null; render();
+  });
+
+  /* ---------- routing ---------- */
+  function setMarket(m) {
+    state.market = m;
+    const h = m === "all" ? "alle" : MARKETS[m].hash;
+    if (location.hash !== "#" + h) history.replaceState(null, "", "#" + h);
+    render();
+  }
+  function fromHash() {
+    const h = location.hash.replace("#", "");
+    state.market = h === "international" ? "int" : h === "deutschland" ? "de" : "all";
+    render();
+  }
+  window.addEventListener("hashchange", fromHash);
+
+  /* ---------- boot ---------- */
+  function status(msg, err) { const s = $("#status"); if (!msg) { s.hidden = true; return; } s.hidden = false; s.className = "note" + (err ? " err" : ""); s.textContent = msg; }
+
+  async function boot() {
+    fromHash();
+    if (!window.claude || !window.claude.use) { state.loaded = true; state.canWrite = false; status("Datenbank nicht verfügbar. Öffne den Hub über claude.ai, um Creator zu sehen und hinzuzufügen."); render(); return; }
+    [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    if (user) {
+      try { meId = await user.id(); } catch {}
+      try { const w = await user.can("data.write"); if (w === false) state.canWrite = false; } catch {}
+    }
+    if (!db) { state.loaded = true; state.canWrite = false; status("Datenbank nicht verfügbar. Melde dich bei claude.ai an, um den Creator-Pool zu sehen."); render(); return; }
+    const timer = setTimeout(() => status("Die Daten sind gerade nicht erreichbar. Es wird weiter versucht …"), 10000);
+    db.collection("creators").onSnapshot(snap => {
+      state.creators = new Map(snap.docs.map(d => [d.id, { id: d.id, ...d.data() }]));
+      if (!snap.metadata.fromCache) { clearTimeout(timer); status(null); }
+      state.loaded = true; render();
+    }, err => {
+      clearTimeout(timer); state.loaded = true;
+      status(err && err.code === "revoked" ? "Zugriff wurde entzogen." : "Verbindung zur Datenbank verloren. Seite neu öffnen.", true);
+      render();
+    });
+    render();
+  }
+  render();
+  boot();
+})();
+</script>
